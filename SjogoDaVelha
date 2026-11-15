@@ -1,0 +1,197 @@
+algoritmo "SuperJogoDaVelha"
+var
+   tab : vetor[1..81] de caractere
+   grande : vetor[1..9] de caractere
+   jogador, s, msg : caractere
+   q, c, i, b, p, lin, col, base, jogadas, ocupados : inteiro
+   ok, venceu, acabou, continuar : logico
+inicio
+   para i de 1 ate 81 faca
+      tab[i] <- " "
+   fimpara
+   para i de 1 ate 9 faca
+      grande[i] <- " "
+   fimpara
+   jogador <- "X"
+   q <- 0
+   jogadas <- 0
+   acabou <- falso
+   continuar <- verdadeiro
+   msg <- "Comeca o jogo!"
+
+   enquanto continuar faca
+      // ===== DESENHA O TABULEIRO =====
+      escreval("")
+      escreval("       SUPER JOGO DA VELHA")
+      escreval("")
+      para lin de 1 ate 9 faca
+         escreva("  ")
+         para col de 1 ate 9 faca
+            b <- ((lin - 1) div 3) * 3 + ((col - 1) div 3) + 1
+            p <- ((lin - 1) mod 3) * 3 + ((col - 1) mod 3) + 1
+            i <- (b - 1) * 9 + p
+            se tab[i] = " " entao
+               escreva(" .")
+            senao
+               escreva(" ", tab[i])
+            fimse
+            se (col = 3) ou (col = 6) entao
+               escreva(" |")
+            fimse
+         fimpara
+         escreval("")
+         se (lin = 3) ou (lin = 6) entao
+            escreval("  -------+-------+-------")
+         fimse
+      fimpara
+      escreval("")
+      escreval("  Numeros:  1 2 3 / 4 5 6 / 7 8 9")
+      escreval("")
+      escreval(msg)
+      se q > 0 entao
+         escreval("Jogando no quadrado ", q)
+      fimse
+
+      se acabou entao
+         continuar <- falso
+      senao
+         se q = 0 entao
+            // ===== ESCOLHER O QUADRADO GRANDE =====
+            ok <- falso
+            repita
+               escreva("Jogador ", jogador, ", escolha o QUADRADO GRANDE (1 a 9): ")
+               leia(q)
+               se (q >= 1) e (q <= 9) entao
+                  se grande[q] = " " entao
+                     ok <- verdadeiro
+                  senao
+                     escreval("Esse quadrado ja tem dono! Escolha outro.")
+                  fimse
+               senao
+                  escreval("Numero invalido! Digite de 1 a 9.")
+               fimse
+            ate ok
+            jogadas <- 0
+            msg <- ""
+         senao
+            // ===== ESCOLHER A CASINHA =====
+            base <- (q - 1) * 9
+            ok <- falso
+            repita
+               escreva("Jogador ", jogador, ", escolha a CASINHA (1 a 9): ")
+               leia(c)
+               se (c >= 1) e (c <= 9) entao
+                  se tab[base + c] = " " entao
+                     ok <- verdadeiro
+                  senao
+                     escreval("Casinha ocupada! Escolha outra.")
+                  fimse
+               senao
+                  escreval("Numero invalido! Digite de 1 a 9.")
+               fimse
+            ate ok
+
+            s <- jogador
+            tab[base + c] <- s
+            jogadas <- jogadas + 1
+            msg <- ""
+
+            // ===== ALGUEM GANHOU O QUADRADO PEQUENO? =====
+            venceu <- falso
+            se (tab[base+1] = s) e (tab[base+2] = s) e (tab[base+3] = s) entao
+               venceu <- verdadeiro
+            fimse
+            se (tab[base+4] = s) e (tab[base+5] = s) e (tab[base+6] = s) entao
+               venceu <- verdadeiro
+            fimse
+            se (tab[base+7] = s) e (tab[base+8] = s) e (tab[base+9] = s) entao
+               venceu <- verdadeiro
+            fimse
+            se (tab[base+1] = s) e (tab[base+4] = s) e (tab[base+7] = s) entao
+               venceu <- verdadeiro
+            fimse
+            se (tab[base+2] = s) e (tab[base+5] = s) e (tab[base+8] = s) entao
+               venceu <- verdadeiro
+            fimse
+            se (tab[base+3] = s) e (tab[base+6] = s) e (tab[base+9] = s) entao
+               venceu <- verdadeiro
+            fimse
+            se (tab[base+1] = s) e (tab[base+5] = s) e (tab[base+9] = s) entao
+               venceu <- verdadeiro
+            fimse
+            se (tab[base+3] = s) e (tab[base+5] = s) e (tab[base+7] = s) entao
+               venceu <- verdadeiro
+            fimse
+
+            se venceu entao
+               // o quadrado inteiro fica com a letra do vencedor
+               grande[q] <- s
+               para i de 1 ate 9 faca
+                  tab[base + i] <- s
+               fimpara
+               msg <- "O jogador " + s + " venceu esse quadrado!"
+               q <- 0
+
+               // ===== ALGUEM GANHOU O JOGO GRANDE? =====
+               venceu <- falso
+               se (grande[1] = s) e (grande[2] = s) e (grande[3] = s) entao
+                  venceu <- verdadeiro
+               fimse
+               se (grande[4] = s) e (grande[5] = s) e (grande[6] = s) entao
+                  venceu <- verdadeiro
+               fimse
+               se (grande[7] = s) e (grande[8] = s) e (grande[9] = s) entao
+                  venceu <- verdadeiro
+               fimse
+               se (grande[1] = s) e (grande[4] = s) e (grande[7] = s) entao
+                  venceu <- verdadeiro
+               fimse
+               se (grande[2] = s) e (grande[5] = s) e (grande[8] = s) entao
+                  venceu <- verdadeiro
+               fimse
+               se (grande[3] = s) e (grande[6] = s) e (grande[9] = s) entao
+                  venceu <- verdadeiro
+               fimse
+               se (grande[1] = s) e (grande[5] = s) e (grande[9] = s) entao
+                  venceu <- verdadeiro
+               fimse
+               se (grande[3] = s) e (grande[5] = s) e (grande[7] = s) entao
+                  venceu <- verdadeiro
+               fimse
+
+               se venceu entao
+                  msg <- "*** O JOGADOR " + s + " VENCEU O SUPER JOGO DA VELHA! ***"
+                  acabou <- verdadeiro
+               senao
+                  ocupados <- 0
+                  para i de 1 ate 9 faca
+                     se grande[i] <> " " entao
+                        ocupados <- ocupados + 1
+                     fimse
+                  fimpara
+                  se ocupados = 9 entao
+                     msg <- "*** NINGUEM FEZ LINHA: EMPATE! ***"
+                     acabou <- verdadeiro
+                  fimse
+               fimse
+            senao
+               se jogadas = 9 entao
+                  // deu velha: apaga o quadrado, fica livre de novo
+                  para i de 1 ate 9 faca
+                     tab[base + i] <- " "
+                  fimpara
+                  msg <- "Deu velha! O quadrado foi apagado e esta livre de novo."
+                  q <- 0
+               fimse
+            fimse
+
+            // ===== TROCA A VEZ =====
+            se jogador = "X" entao
+               jogador <- "O"
+            senao
+               jogador <- "X"
+            fimse
+         fimse
+      fimse
+   fimenquanto
+fimalgoritmo
